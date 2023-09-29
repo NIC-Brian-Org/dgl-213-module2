@@ -8,13 +8,13 @@ Since we've taken the time to familiarize ourselves with the Flood Fill codebase
 We won't need quite as in-depth discussion of the code for this module, of course, since you've already spent some time with it. I'll use this section to discuss some of the main changes that I've made in the codebase since module 1: In particular, I've added score tracking and an undo function (your assignment for module 1) and I've added a feature that transposes the board - just for fun.
 
 ### Player score
-On line 15 I've added a new `const` `playerScoreText` which is used to grab the `span` element with ID `score-text` from the index.html file. We later use the `textContent` property attached to this element reference to update the score value visible to the player.
+On line 17 I've added a new `const` `playerScoreText` which is used to grab the `span` element with ID `score-text` from the index.html file. We later use the `textContent` property attached to this element reference to update the score value visible to the player.
 
-On line 28 I've added a new constant `MAXIMUM_SCORE`. This is in keeping with my proposed solution from the module 1 milestone 1 document (i.e. the approach to tracking score I have used is to assume a maximum best score of `CELLS_PER_AXIS` squared - the number of cells in the game - and subtract 1 for every click. Thus a 'good' score is closer to, in this case, 81; while a poor score is always closer to 0).
+On line 30 I've added a new constant `MAXIMUM_SCORE`. This is in keeping with my proposed solution from the module 1 milestone 1 document (i.e. the approach to tracking score I have used is to assume a maximum best score of `CELLS_PER_AXIS` squared - the number of cells in the game - and subtract 1 for every click. Thus a 'good' score is closer to, in this case, 81; while a poor score is always closer to 0).
 
-On line 33 I've added a `playerScore` variable. This variable is intended to track the actual player score as calculate with each click.
+On line 35 I've added a `playerScore` variable. This variable is intended to track the actual player score as calculate with each click.
 
-On line 91 I've added the assignment of `playerScore` to the `playerScoreText` `textContent` property. This line basically just takes whatever is currently stored in `playerScore` converts it to a string and subs it into the HTML element that `playerScoreText` refers to. Note there are no safety checks happening here - we could end up assigning nonsensical information to `playerScoreText.textContent`.
+On line 93 I've added the assignment of `playerScore` to the `playerScoreText` `textContent` property. This line basically just takes whatever is currently stored in `playerScore` converts it to a string and subs it into the HTML element that `playerScoreText` refers to. Note there are no safety checks happening here - we could end up assigning nonsensical information to `playerScoreText.textContent`.
 
 >**innerHTML vs textContent**
 >
@@ -24,7 +24,7 @@ On line 91 I've added the assignment of `playerScore` to the `playerScoreText` `
 >
 >The use of `innerHTML` to place text in an HTML page is generally frowned upon since `innerHTML` will accept HTML content that could be used to run malicious scripts on a page. In many cases these days other browser and HTML safety features reduce the chance of this happening; however, it is still a possibility. You should always avoid the use of `innerHTML`.
 
-On line 131 I've added a call to the `updatePlayerScore()` function (see info below) to the `gridClickHandler()`. What this means is that every time a click is registered by the canvas `updatePlayerScore()` will be called. It's worth noting here that this may or may not be an ideal solution: Perhaps we want a scoring model where the score is *only* updated when the play is valid. Here we keep updating score on every click - even on mistakes - *and* we're also not changing the score with an undo. To some extent this all seems 'fair', but it might not be the particular method of scoring you have in mind.
+On line 133 I've added a call to the `updatePlayerScore()` function (see info below) to the `gridClickHandler()`. What this means is that every time a click is registered by the canvas `updatePlayerScore()` will be called. It's worth noting here that this may or may not be an ideal solution: Perhaps we want a scoring model where the score is *only* updated when the play is valid. Here we keep updating score on every click - even on mistakes - *and* we're also not changing the score with an undo. To some extent this all seems 'fair', but it might not be the particular method of scoring you have in mind.
 
 >**Exercise**
 >
@@ -34,7 +34,7 @@ On line 131 I've added a call to the `updatePlayerScore()` function (see info be
 >
 >I'll post a solution in a video late in the first or early in the second week of module 2.
 
-On line 102 I've added the declaration for the `updatePlayerScore()` function. This is a relatively simple function whose only purpose is to modify `playerScore` when called. An intereting thing to note here, however, is the use of the *ternary conditional operator*. This is the only operator in JavaScript (and in most programming languages) that accepts *three* operands rather than one or two (e.g. think about the `+` operator, which has two operands - the two numbers to be added; and the `!` operator, which has one operand - the varible to be negated).
+On line 104 I've added the declaration for the `updatePlayerScore()` function. This is a relatively simple function whose only purpose is to modify `playerScore` when called. An intereting thing to note here, however, is the use of the *ternary conditional operator*. This is the only operator in JavaScript (and in most programming languages) that accepts *three* operands rather than one or two (e.g. think about the `+` operator, which has two operands - the two numbers to be added; and the `!` operator, which has one operand - the varible to be negated).
 
 The ternary conditional operator looks like this:
 ```javascript
@@ -59,11 +59,11 @@ if (playerScore > 0) {
 This is *precisely* the same thing we're doing with the ternary conditional operator - it's just a bit more verbose. So anytime you find yourself writing code like the `if-else` above, consider using the ternary conditional operator instead.
 
 ### Undo feature
-On line 12 I've added a new `const` `undoButton` that contains a reference to the HTML element that has the ID `undo`. This is our Undo button in the game UI.
+On line 14 I've added a new `const` `undoButton` that contains a reference to the HTML element that has the ID `undo`. This is our Undo button in the game UI.
 
-On line 140 I've added a new event listener on the `undoButton` to watch for the `mousedown` event. When this event fires we call the function `rollBackHistory()` via `undoLastMove()`.
+On line 142 I've added a new event listener on the `undoButton` to watch for the `mousedown` event. When this event fires we call the function `rollBackHistory()` via `undoLastMove()`.
 
-On line 62 I have added the `rollBackHistory()` function. This function uses a technique similar to that used in `updateGridAt()`: First we check the `grids` array to ensure it has *at least* one element:
+On line 64 I have added the `rollBackHistory()` function. This function uses a technique similar to that used in `updateGridAt()`: First we check the `grids` array to ensure it has *at least* one element:
 ```javascript
 if (grids.length > 1)
 ```
@@ -78,4 +78,4 @@ render(grids[grids.length-1]);
 ```
 
 ### Transpose feature
-For the transpose feature there was a new `const` reference to the 'Rotate' button and a new associated event listener - much the same as for the undo feature. The most important code to the feature is found on line 69 where the function `transposeGrid()` is defined. I won't walk through the code in detail here, but will leave it as an exercise for you to explore. Note however that we're not just transposing the current grid state, but instead *all* grid states in the `grids` history. Which means that if at some arbitrary point in the game you transpose the grid and then subsequently press undo the game will return transposed versions of all prior grids. This probably doesn't add a lot of value to the game, but it was fun to code :grin:.
+For the transpose feature there was a new `const` reference to the 'Rotate' button and a new associated event listener - much the same as for the undo feature. The most important code to the feature is found on line 71 where the function `transposeGrid()` is defined. I won't walk through the code in detail here, but will leave it as an exercise for you to explore. Note however that we're not just transposing the current grid state, but instead *all* grid states in the `grids` history. Which means that if at some arbitrary point in the game you transpose the grid and then subsequently press undo the game will return transposed versions of all prior grids. This probably doesn't add a lot of value to the game, but it was fun to code :grin:.
